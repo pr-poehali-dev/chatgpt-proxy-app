@@ -51,10 +51,24 @@ const Index = () => {
         body: JSON.stringify({ message: input })
       });
 
-      const data = await response.json();
+      let errorMessage = 'Ошибка при отправке сообщения';
+      
+      if (response.status === 402) {
+        errorMessage = 'Достигнут лимит вызовов. Обновите подписку на poehali.dev/p/pay';
+      }
+
+      const contentType = response.headers.get('content-type');
+      let data;
+      
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        data = { error: text || errorMessage };
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || 'Ошибка при отправке сообщения');
+        throw new Error(data.error || errorMessage);
       }
 
       const assistantMessage: Message = {
