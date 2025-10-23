@@ -1,0 +1,33 @@
+{
+  "tests": [
+    {
+      "name": "Handle OPTIONS for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": "",
+      "bodyMatcher": "exact"
+    },
+    {
+      "name": "Reject GET requests",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 405,
+      "expectedBody": {
+        "error": "Method not allowed"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Require message field",
+      "method": "POST",
+      "path": "/",
+      "body": {"message": ""},
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "Message is required"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
